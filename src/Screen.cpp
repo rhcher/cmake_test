@@ -1,69 +1,66 @@
 #include "Screen.hpp"
 using namespace std;
 
-TextQuery::TextQuery(ifstream& in)
+TextQuery::TextQuery(ifstream& is)
+	: file(new vector<string>)
 {
-	string line;
-	auto num = 1;
-	while (getline(in, line))
+	string text;
+	while (getline(is, text))
 	{
-		auto linetmp = line;
-		string numtmp = to_string(num);
-		numtmp.append(") ");  // 匹配输出格式
-		lines.push_back(numtmp + line);
-		++num;
-
-		istringstream is(linetmp);	// 此处读入的是原始文本
+		file->push_back(text);
+		int n = file->size() - 1;
+		istringstream line(text);
 		string word;
-		while (is >> word)
+		while (line >> word)
 		{
-			wordProcess(word);	// 处理单词
-			auto tmp = rules[word];
-			++wordCount[word];
-			if (tmp.size() == 0)
+			auto& lines = wm[word];
+			if (!lines)
 			{
-				tmp.push_back(numtmp + line);
+				lines.reset(new set<line_no>);
 			}
-			if (find(tmp.begin(), tmp.end(), numtmp + line) == tmp.end())
-			{
-				tmp.push_back(numtmp + line);
-			}
-			rules[word] = tmp;
+			lines->insert(n);
 		}
 	}
 }
 
-// 打印单词及其对应的句子
-void TextQuery::print() const
+QueryResult TextQuery::query(const std::string& sougth) const
 {
-	auto f = [&](const pair<string, vector<string>>& p) {
-		cout << "<" << p.first << ">"
-			 << " occurs " << wordCount.at(p.first) << " times" << endl;
-		auto s = [](const string& s) { cout << "    (line " << s << endl; };
-		for_each(p.second.begin(), p.second.end(), s);
-	};
-
-	for_each(rules.begin(), rules.end(), f);
-}
-
-// 打印读取的文本
-void TextQuery::printText() const
-{
-	for_each(lines.begin(), lines.end(), [](const string& s) { cout << s << endl; });
-}
-
-// 查询单词出现的次数并输出全部所在行
-void TextQuery::wordQuery(const std::string& word) const
-{
-	if (rules.find(word) == rules.end())
+	static shared_ptr<set<line_no>> nodata(new set<line_no>);
+	auto loc = wm.find(sougth);
+	if (loc == wm.end())
 	{
-		cerr << "no this word!" << endl;
-		return;
+		return QueryResult(sougth, nodata, file);
 	}
-	auto check = [&]() { return wordCount.at(word) > 1; };  // 判断是单数还是复数
-	cout << word << " occurs " << wordCount.at(word) << (check() ? " times" : " time") << endl;
-	auto f = [](const string& s) {
-		cout << "    (line " << s << endl;
-	};
-	for_each(rules.at(word).begin(), rules.at(word).end(), f);
+	else
+	{
+		return QueryResult(sougth, loc->second, file);
+	}
+}
+
+string make_plural(size_t ctr, const string& word, const string& ending)
+{
+	return (ctr > 1) ? word + ending : word;
+}
+
+ostream& print(ostream& os, const QueryResult& qr)
+{
+	os << qr.sougth << " occers " << qr.lines->size() << " " << make_plural(qr.lines->size(), "time", "s") << endl;
+	for (auto item : *qr.lines)
+	{
+		os << "\t(line " << item + 1 << ") " << *(qr.file->begin() + item) << endl;
+	}
+	return os;
+}
+
+void runQueries(ifstream& infile)
+{
+	TextQuery tq(infile);
+	while (true)
+	{
+		cout << "enter word to look for, or q to quit: ";
+		string s;
+		if (!(cin >> s) || s == "q")
+			break;
+		print(cout, tq.query(s));
+	}
 }

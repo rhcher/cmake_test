@@ -11,34 +11,34 @@
 #include <string>
 #include <vector>
 
+class QueryResult;
 class TextQuery
 {
 public:
+	using line_no = std::vector<std::string>::size_type;
 	TextQuery() = default;
-	TextQuery(std::ifstream& in);
-
-	void print() const;
-	void printText() const;
-	void wordQuery(const std::string& s) const;
-
-	virtual ~TextQuery() {}
+	TextQuery(std::ifstream&);
+	QueryResult query(const std::string&) const;
 
 private:
-	//去除单词中的标点符号,并将所有单词出换为小写
-	void wordProcess(std::string& s);
-	const std::string punctuation = {"!@#$%^&*()-_=+,<.>/?|\"\'"};	//标点符号
-	std::vector<std::string> lines;									// 读入的文本
-	std::map<std::string, std::vector<std::string>> rules;			// 存储单词及其对应的句子
-	std::map<std::string, int> wordCount;							// 存储单词以及其出现的次数
+	std::shared_ptr<std::vector<std::string>> file;
+	std::map<std::string, std::shared_ptr<std::set<line_no>>> wm;
 };
 
-inline void TextQuery::wordProcess(std::string& s)
+class QueryResult
 {
-	auto beg = s.find_first_not_of(punctuation);
-	auto end = s.find_first_of(punctuation, beg);
-	s = s.substr(beg, end - beg);
-	for (auto& item : s)
-	{
-		item = tolower(item);
-	}
-}
+	friend std::ostream& print(std::ostream&, const QueryResult&);
+
+public:
+	using line_no = std::vector<std::string>::size_type;
+	QueryResult() = default;
+	QueryResult(std::string s, std::shared_ptr<std::set<line_no>> l, std::shared_ptr<std::vector<std::string>> f)
+		: sougth(s), lines(l), file(f) {}
+
+private:
+	std::string sougth;
+	std::shared_ptr<std::set<line_no>> lines;
+	std::shared_ptr<std::vector<std::string>> file;
+};
+
+void runQueries(std::ifstream& infile);

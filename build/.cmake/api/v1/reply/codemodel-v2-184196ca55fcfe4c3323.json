@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "",
 			"projects" : 
 			[
 				{
@@ -40,14 +40,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Sales_data::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Sales_data-Debug-a19551cfe4f66a81fe6e.json",
+					"jsonFile" : "target-Sales_data-a59ba55e59c24693e6ec.json",
 					"name" : "Sales_data",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "main::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-main-Debug-f39bfe176edb182c4271.json",
+					"jsonFile" : "target-main-cda9dadbb131b815ed12.json",
 					"name" : "main",
 					"projectIndex" : 0
 				}
@@ -57,8 +57,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/rhcher/CODE/cmake_project_test/build",
-		"source" : "/home/rhcher/CODE/cmake_project_test"
+		"build" : "/home/rhcher/CODE/cmake_test/build",
+		"source" : "/home/rhcher/CODE/cmake_test"
 	},
 	"version" : 
 	{

@@ -63,7 +63,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g  "
+					"fragment" : " "
 				},
 				{
 					"backtrace" : 3,
@@ -81,7 +81,7 @@
 			[
 				{
 					"backtrace" : 4,
-					"path" : "/home/rhcher/CODE/cmake_project_test/include"
+					"path" : "/home/rhcher/CODE/cmake_test/include"
 				}
 			],
 			"language" : "CXX",
@@ -103,10 +103,6 @@
 	{
 		"commandFragments" : 
 		[
-			{
-				"fragment" : "-g",
-				"role" : "flags"
-			},
 			{
 				"fragment" : "",
 				"role" : "flags"

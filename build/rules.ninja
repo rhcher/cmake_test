@@ -7,7 +7,7 @@
 
 # =============================================================================
 # Project: cpp_test
-# Configuration: Debug
+# Configuration: 
 # =============================================================================
 # =============================================================================
 
@@ -25,7 +25,7 @@ rule CUSTOM_COMMAND
 rule CXX_COMPILER__main
   depfile = $DEP_FILE
   deps = gcc
-  command = /usr/bin/clang++-10  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = /usr/bin/clang++  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building CXX object $out
 
 
@@ -33,7 +33,7 @@ rule CXX_COMPILER__main
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__main
-  command = $PRE_LINK && /usr/bin/clang++-10  $FLAGS  $LINK_FLAGS $in  -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
+  command = $PRE_LINK && /usr/bin/clang++  $FLAGS  $LINK_FLAGS $in  -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
 
@@ -44,7 +44,7 @@ rule CXX_EXECUTABLE_LINKER__main
 rule CXX_COMPILER__Sales_data
   depfile = $DEP_FILE
   deps = gcc
-  command = /usr/bin/clang++-10  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = /usr/bin/clang++  $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building CXX object $out
 
 
@@ -61,7 +61,7 @@ rule CXX_STATIC_LIBRARY_LINKER__Sales_data
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake -S/home/rhcher/CODE/cmake_project_test -B/home/rhcher/CODE/cmake_project_test/build
+  command = /usr/bin/cmake -S/home/rhcher/CODE/cmake_test -B/home/rhcher/CODE/cmake_test/build
   description = Re-running CMake...
   generator = 1
 

@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "",
+			"name" : "Debug",
 			"projects" : 
 			[
 				{
@@ -40,14 +40,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Sales_data::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Sales_data-a59ba55e59c24693e6ec.json",
+					"jsonFile" : "target-Sales_data-Debug-fc641b78aaa8a28b8ad9.json",
 					"name" : "Sales_data",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "main::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-main-cda9dadbb131b815ed12.json",
+					"jsonFile" : "target-main-Debug-fd414308c5928c88e4fa.json",
 					"name" : "main",
 					"projectIndex" : 0
 				}

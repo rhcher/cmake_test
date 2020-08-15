@@ -57,7 +57,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " "
+					"fragment" : "-g  "
 				},
 				{
 					"backtrace" : 2,

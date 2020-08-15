@@ -1,13 +1,13 @@
 [
 {
   "directory": "/home/rhcher/CODE/cmake_test/build",
-  "command": "/usr/bin/clang++   -I../include    -g -D_GLIBCXX_DEBUG -std=gnu++17 -o CMakeFiles/main.dir/src/main.cpp.o -c /home/rhcher/CODE/cmake_test/src/main.cpp",
+  "command": "/usr/bin/clang++-10   -I../include  -g   -g -D_GLIBCXX_DEBUG -std=gnu++17 -o CMakeFiles/main.dir/src/main.cpp.o -c /home/rhcher/CODE/cmake_test/src/main.cpp",
   "file": "/home/rhcher/CODE/cmake_test/src/main.cpp"
 },
 
 {
   "directory": "/home/rhcher/CODE/cmake_test/build",
-  "command": "/usr/bin/clang++   -I../include    -D_GLIBCXX_DEBUG -o CMakeFiles/Sales_data.dir/src/Screen.cpp.o -c /home/rhcher/CODE/cmake_test/src/Screen.cpp",
+  "command": "/usr/bin/clang++-10   -I../include  -g   -D_GLIBCXX_DEBUG -o CMakeFiles/Sales_data.dir/src/Screen.cpp.o -c /home/rhcher/CODE/cmake_test/src/Screen.cpp",
   "file": "/home/rhcher/CODE/cmake_test/src/Screen.cpp"
 }
 ]

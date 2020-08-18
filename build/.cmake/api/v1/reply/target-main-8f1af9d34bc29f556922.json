@@ -1,9 +1,8 @@
 {
-	"archive" : {},
 	"artifacts" : 
 	[
 		{
-			"path" : "libSales_data.a"
+			"path" : "main"
 		}
 	],
 	"backtrace" : 1,
@@ -11,7 +10,8 @@
 	{
 		"commands" : 
 		[
-			"add_library",
+			"add_executable",
+			"target_link_libraries",
 			"target_compile_options",
 			"target_include_directories",
 			"target_sources"
@@ -28,25 +28,31 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 4,
+				"line" : 10,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 8,
+				"line" : 12,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 6,
+				"line" : 15,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 5,
+				"line" : 13,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 11,
 				"parent" : 0
 			}
 		]
@@ -57,17 +63,24 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g  "
+					"fragment" : " "
+				},
+				{
+					"backtrace" : 3,
+					"fragment" : "-g"
 				},
 				{
 					"backtrace" : 2,
 					"fragment" : "-D_GLIBCXX_DEBUG"
+				},
+				{
+					"fragment" : "-std=gnu++2a"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 3,
+					"backtrace" : 4,
 					"path" : "/home/rhcher/CODE/cmake_test/include"
 				}
 			],
@@ -78,9 +91,32 @@
 			]
 		}
 	],
-	"id" : "Sales_data::@6890427a1f51a3e7e1df",
-	"name" : "Sales_data",
-	"nameOnDisk" : "libSales_data.a",
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "Sales_data::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "main::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "libSales_data.a",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "main",
+	"nameOnDisk" : "main",
 	"paths" : 
 	{
 		"build" : ".",
@@ -99,11 +135,11 @@
 	"sources" : 
 	[
 		{
-			"backtrace" : 4,
+			"backtrace" : 5,
 			"compileGroupIndex" : 0,
-			"path" : "src/Screen.cpp",
+			"path" : "src/main.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "STATIC_LIBRARY"
+	"type" : "EXECUTABLE"
 }

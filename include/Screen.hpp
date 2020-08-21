@@ -16,7 +16,7 @@ class StrVec
 public:
 	StrVec()
 		: elements(nullptr), first_free(nullptr), cap(nullptr) {}
-	StrVec(std::initializer_list<std::string>& il);
+	StrVec(const std::initializer_list<std::string>& il);
 	StrVec(const StrVec&);				   // 拷贝构造函数
 	StrVec& operator=(const StrVec& rhs);  // 拷贝赋值运算符
 	~StrVec();							   // 析构函数

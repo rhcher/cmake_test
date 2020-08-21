@@ -1,7 +1,9 @@
 #include "Screen.hpp"
 using namespace std;
 
-StrVec::StrVec(initializer_list<string>& il)
+allocator<string> StrVec::alloc;
+
+StrVec::StrVec(const initializer_list<string>& il)
 {
 	auto capacity = il.size() ? il.size() + il.size() / 2 : 1;
 	auto newdata = alloc.allocate(capacity);
@@ -42,7 +44,7 @@ pair<string*, string*> StrVec::alloc_n_copy(const string* b, const string* e)
 
 void StrVec::free()
 {
-	for_each(first_free, elements, [](const string* s) { alloc.destroy(s); });
+	for_each(elements, first_free, [](const string& s) { alloc.destroy(&s); });
 	// while (first_free != elements)
 	// {
 	// 	alloc.destroy(--first_free);

@@ -8,58 +8,57 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <utility>
+#include <initializer_list>
 
-class Folder;
-class Message
+class StrVec
 {
-	friend class Folder;
-	friend void swap(Message& lhs, Message& rhs);
-
 public:
-	explicit Message(const std::string& s = "")
-		: contents(s) {}
-	Message(const Message&);			 // 拷贝构造函数
-	Message& operator=(const Message&);	 // 拷贝赋值运算符
-	void print()
+	StrVec()
+		: elements(nullptr), first_free(nullptr), cap(nullptr) {}
+	StrVec(std::initializer_list<std::string>& il);
+	StrVec(const StrVec&);				   // 拷贝构造函数
+	StrVec& operator=(const StrVec& rhs);  // 拷贝赋值运算符
+	~StrVec();							   // 析构函数
+
+	void push_back(const std::string& s);
+	void reserve(const size_t& sz);
+	void resize(const size_t& sz, const std::string& s = std::string());
+	size_t size() const
 	{
-		std::cout << contents << std::endl;
+		return first_free - elements;
 	}
-	~Message();							 // 析构函数
-
-	void save(Folder&);	   // 从给定Folder中添加本Message
-	void remove(Folder&);  // 从给定Folder中删除本Message
-
-private:
-	std::string contents;		// 实际消息文本
-	std::set<Folder*> folders;	// 包含本Message的Folder
-
-	// 将本Message添加到指向参数的Folder中
-	void add_to_Folders(const Message&);
-	// 从folders中的每个Folder删除本Message
-	void remove_from_Folders();
-};
-
-class Folder
-{
-	friend Message;
-	friend void swap(Message&, Message&);
-
-public:
-	Folder() = default;
-	Folder(const Folder& f);
-	Folder& operator=(const Folder& f);
-	~Folder();
-
-	void save(Message* m);
-	void remove(Message* m);
-	void print();
+	size_t capacity() const
+	{
+		return cap - elements;
+	}
+	std::string* begin() const
+	{
+		return elements;
+	}
+	std::string* end() const
+	{
+		return first_free;
+	}
 
 private:
-	std::set<Message*> messages;  // 本Folder所包含的Message指针的集合
-	// 将指定Message加入到本Folder中
-	void addMsg(Message*);
-	// 将指定Message从本Folder中移除
-	void remMsg(Message*);
-};
+	static std::allocator<std::string> alloc;  // 分配元素
+	std::string* elements;					   // 指向数组首元素的指针
+	std::string* first_free;				   // 指向第一个空闲元素的指针
+	std::string* cap;						   // 指向数组尾后位置的指针
 
-void swap(Message&, Message&);
+	// 被添加元素的函数所使用
+	void chk_n_alloc()
+	{
+		if (size() == capacity())
+		{
+			reallocate();
+		}
+	}
+	// 工具函数，被拷贝构造函数、赋值运算符和析构函数使用
+	std::pair<std::string*, std::string*> alloc_n_copy(const std::string* s1, const std::string* s2);
+	// 销毁元素并释放内存
+	void free();
+	// 获得更多内存并拷贝已有元素
+	void reallocate();
+};

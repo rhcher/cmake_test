@@ -1,134 +1,116 @@
 #include "Screen.hpp"
 using namespace std;
 
-inline void Folder::addMsg(Message* msg)
+StrVec::StrVec(initializer_list<string>& il)
 {
-	messages.insert(msg);
+	auto capacity = il.size() ? il.size() + il.size() / 2 : 1;
+	auto newdata = alloc.allocate(capacity);
+	auto free = uninitialized_copy(il.begin(), il.end(), newdata);
+	elements = newdata;
+	first_free = free;
+	cap = elements + capacity;
 }
 
-inline void Folder::remMsg(Message* msg)
+void StrVec::push_back(const std::string& s)
 {
-	messages.erase(msg);
+	chk_n_alloc();
+	// 在first_free指向的元素中构造s的副本
+	alloc.construct(first_free++, s);
 }
 
-inline void Message::add_to_Folders(const Message& msg)
+void StrVec::reallocate()
 {
-	for (auto item : msg.folders)
+	auto newcapacity = size() ? size() * 2 : 1;
+	auto newdata = alloc.allocate(newcapacity);
+	auto dest = newdata;
+	auto elem = elements;
+	for (size_t i = 0; i != size(); ++i)
 	{
-		item->addMsg(this);
+		alloc.construct(dest++, std::move(*elem++));
 	}
+	free();
+	elements = newdata;
+	first_free = dest;
+	cap = elements + newcapacity;
 }
 
-inline void Message::remove_from_Folders()
+pair<string*, string*> StrVec::alloc_n_copy(const string* b, const string* e)
 {
-	for (auto item : folders)
-	{
-		item->remMsg(this);
-	}
+	auto data = alloc.allocate(e - b);
+	return {data, uninitialized_copy(b, e, data)};
 }
 
-Message::Message(const Message& m)
-	: contents(m.contents), folders(m.folders)
+void StrVec::free()
 {
-	add_to_Folders(m);
+	for_each(first_free, elements, [](const string* s) { alloc.destroy(s); });
+	// while (first_free != elements)
+	// {
+	// 	alloc.destroy(--first_free);
+	// }
+	alloc.deallocate(elements, cap - elements);
 }
 
-Message& Message::operator=(const Message& rhs)
+StrVec::StrVec(const StrVec& s)
 {
-	remove_from_Folders();
-	contents = rhs.contents;
-	folders = rhs.folders;
-	add_to_Folders(rhs);
+	auto newdata = alloc_n_copy(s.begin(), s.end());
+	elements = newdata.first;
+	first_free = cap = newdata.second;
+}
+
+StrVec& StrVec::operator=(const StrVec& rhs)
+{
+	auto data = alloc_n_copy(rhs.begin(), rhs.end());
+	free();
+	elements = data.first;
+	first_free = cap = data.second;
 	return *this;
 }
 
-Message::~Message()
+StrVec::~StrVec()
 {
-	remove_from_Folders();
+	free();
 }
 
-void Message::save(Folder& f)
+void StrVec::reserve(const size_t& sz)
 {
-	folders.insert(&f);
-	f.addMsg(this);
-}
-
-void Message::remove(Folder& f)
-{
-	folders.erase(&f);
-	f.remMsg(this);
-}
-
-void swap(Message& lhs, Message& rhs)
-{
-	using std::swap;
-	for (auto item : lhs.folders)
+	if (sz > capacity())
 	{
-		item->remMsg(&lhs);
-	}
-	for (auto item : rhs.folders)
-	{
-		item->remMsg(&rhs);
-	}
-	swap(lhs.contents, rhs.contents);
-	swap(lhs.folders, rhs.folders);
-	for (auto item : lhs.folders)
-	{
-		item->addMsg(&lhs);
-	}
-	for (auto item : rhs.folders)
-	{
-		item->addMsg(&rhs);
+		auto newdata = alloc.allocate(sz);
+		auto elem = elements;
+		auto dest = newdata;
+		for (size_t i = 0; i != size(); ++i)
+		{
+			alloc.construct(dest++, std::move(*elem++));
+		}
+		free();
+		elements = newdata;
+		first_free = dest;
+		cap = elements + sz;
 	}
 }
 
-Folder::Folder(const Folder& f)
-	: messages(f.messages) 
+void StrVec::resize(const size_t& sz, const string& s)
 {
-	for(auto item : messages)
+	if (sz < capacity())
 	{
-		item->add_to_Folders(*item);
+		if (sz > size())
+		{
+			auto newfree = elements + sz;
+			while (first_free != newfree)
+				alloc.construct(first_free++, s);
+		}
+		else if (sz < size())
+		{
+			auto newfree = elements + sz;
+			while (first_free != newfree)
+			{
+				alloc.destroy(--first_free);
+			}
+		}
 	}
-}
-
-Folder& Folder::operator=(const Folder& f)
-{
-	for(auto item : messages)
+	else if (sz > capacity())
 	{
-		item->remove_from_Folders();
-	}
-	messages = f.messages;
-	for(auto item : messages)
-	{
-		item->add_to_Folders(*item);
-	}
-	return *this;
-}
-
-Folder::~Folder()
-{
-	for(auto item : messages)
-	{
-		item->folders.erase(this);
-	}
-}
-
-void Folder::save(Message *m)
-{
-	messages.insert(m);
-	m->folders.insert(this);
-}
-
-void Folder::remove(Message *m)
-{
-	messages.erase(m);
-	m->folders.erase(this);
-}
-
-void Folder::print()
-{
-	for(auto item : messages)
-	{
-		item->print();
+		auto newsz = sz + sz / 2;
+		reserve(newsz);
 	}
 }

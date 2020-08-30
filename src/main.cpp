@@ -1,3 +1,10 @@
+/*
+ * @Author: skynine
+ * @Date: 2020-08-30 16:17:49
+ * @LastEditors: skynine
+ * @LastEditTime: 2020-08-30 16:21:28
+ * @Description: file content
+ */
 #include "Screen.hpp"
 #include <cstddef>
 using namespace std;
@@ -35,7 +42,8 @@ int main(int argc, char* argv[])
 	StrVec rhs{"rhs", "test", "string"};
 	lhs = {"initializer_list", "test", "string"};
 	sort(lhs.begin(), lhs.end(), greater<string>());
-	cout << lhs << endl;;
+	cout << lhs << endl;
+	;
 	lhs += rhs;
 	cout << lhs;
 	cout << endl;

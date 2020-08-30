@@ -1,7 +1,9 @@
 #include "Screen.hpp"
 using namespace std;
 
-StrVec::StrVec(initializer_list<string>& il)
+allocator<string> StrVec::alloc;
+
+StrVec::StrVec(const initializer_list<string>& il)
 {
 	auto capacity = il.size() ? il.size() + il.size() / 2 : 1;
 	auto newdata = alloc.allocate(capacity);
@@ -18,16 +20,23 @@ void StrVec::push_back(const std::string& s)
 	alloc.construct(first_free++, s);
 }
 
+void StrVec::push_back(std::string&& s) &&
+{
+	chk_n_alloc();
+	alloc.construct(first_free++, std::move(s));
+}
+
 void StrVec::reallocate()
 {
 	auto newcapacity = size() ? size() * 2 : 1;
 	auto newdata = alloc.allocate(newcapacity);
-	auto dest = newdata;
-	auto elem = elements;
-	for (size_t i = 0; i != size(); ++i)
-	{
-		alloc.construct(dest++, std::move(*elem++));
-	}
+	auto dest = uninitialized_copy(make_move_iterator(begin()), make_move_iterator(end()), newdata);
+	// auto dest = newdata;
+	// auto elem = elements;
+	// for (size_t i = 0; i != size(); ++i)
+	// {
+	// 	alloc.construct(dest++, std::move(*elem++));
+	// }
 	free();
 	elements = newdata;
 	first_free = dest;
@@ -42,12 +51,15 @@ pair<string*, string*> StrVec::alloc_n_copy(const string* b, const string* e)
 
 void StrVec::free()
 {
-	for_each(first_free, elements, [](const string* s) { alloc.destroy(s); });
+	if (elements)
+	{
+		for_each(elements, first_free, [](const string& s) { alloc.destroy(&s); });
+		alloc.deallocate(elements, cap - elements);
+	}
 	// while (first_free != elements)
 	// {
 	// 	alloc.destroy(--first_free);
 	// }
-	alloc.deallocate(elements, cap - elements);
 }
 
 StrVec::StrVec(const StrVec& s)
@@ -113,4 +125,114 @@ void StrVec::resize(const size_t& sz, const string& s)
 		auto newsz = sz + sz / 2;
 		reserve(newsz);
 	}
+}
+
+StrVec::StrVec(StrVec&& s) noexcept
+	: elements(s.elements), first_free(s.first_free), cap(s.cap)
+{
+	s.elements = s.first_free = s.cap = nullptr;
+}
+
+StrVec& StrVec::operator=(StrVec&& rhs) noexcept
+{
+	if (this != &rhs)
+	{
+		free();
+		elements = rhs.elements;
+		first_free = rhs.first_free;
+		cap = rhs.cap;
+		rhs.elements = rhs.first_free = rhs.cap = nullptr;
+	}
+	return *this;
+}
+
+ostream& operator<<(ostream& os, const StrVec& s)
+{
+	for (auto b = s.begin(); b != s.end(); ++b)
+	{
+		os << *b << endl;
+	}
+	return os;
+}
+
+istream& operator>>(istream& in, StrVec& s)
+{
+	for (auto b = s.begin(); b != s.end(); ++b)
+	{
+		in >> *b;
+	}
+	return in;
+}
+
+bool operator==(const StrVec& lhs, const StrVec& rhs)
+{
+	return lhs.size() == rhs.size();
+}
+
+bool operator!=(const StrVec& lhs, const StrVec& rhs)
+{
+	return !(lhs == rhs);
+}
+
+bool operator<(const StrVec& lhs, const StrVec& rhs)
+{
+	bool result = true;
+	if (lhs.size() != rhs.size())
+	{
+		if (lhs.size() < rhs.size())
+		{
+			result = true;
+		}
+		else
+		{
+			result = false;
+		}
+	}
+	else
+	{
+		for (auto p = lhs.begin(), b = rhs.begin(); p != lhs.end() && b != rhs.end(); ++p, ++b)
+		{
+			if (*p < *b)
+			{
+				result = true;
+			}
+			else
+			{
+				result = false;
+			}
+		}
+	}
+	return result;
+}
+
+StrVec& StrVec::operator=(const initializer_list<string>& il)
+{
+	return *this = StrVec(il);
+}
+
+StrVec& StrVec::operator+=(const StrVec& s)
+{
+	auto size = this->size() + s.size();
+	auto elem = alloc.allocate(size);
+	auto free = uninitialized_copy(this->begin(), this->end(), elem);
+	free = uninitialized_copy(s.begin(), s.end(), free);
+	elements = elem;
+	first_free = free;
+	cap = elements + size;
+	return *this;
+}
+
+string& StrVec::operator[](const size_t& s)
+{
+	return *(elements + s);
+}
+
+const string& StrVec::operator[](const size_t& index) const
+{
+	return *(elements + index);
+}
+
+StrVec::operator bool() const
+{
+	return true;
 }

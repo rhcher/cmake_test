@@ -1,27 +1,41 @@
 #include <cctype>
 #include <fstream>
 #include <functional>
+#include <initializer_list>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <set>
 #include <sstream>
 #include <string>
-#include <vector>
 #include <utility>
-#include <initializer_list>
+#include <vector>
 
 class StrVec
 {
+	friend std::ostream& operator<<(std::ostream& os, const StrVec& s);
+	friend std::istream& operator>>(std::istream& in, StrVec& s);
+	friend bool operator==(const StrVec& lhs, const StrVec& rhs);
+	friend bool operator!=(const StrVec& lhs, const StrVec& rhs);
+	friend bool operator<(const StrVec& lhs, const StrVec& rhs);
+
 public:
 	StrVec()
 		: elements(nullptr), first_free(nullptr), cap(nullptr) {}
-	StrVec(std::initializer_list<std::string>& il);
-	StrVec(const StrVec&);				   // 拷贝构造函数
-	StrVec& operator=(const StrVec& rhs);  // 拷贝赋值运算符
-	~StrVec();							   // 析构函数
+	StrVec(const std::initializer_list<std::string>& il);
+	StrVec(const StrVec&);					   // 拷贝构造函数
+	StrVec(StrVec&& s) noexcept;			   // 移动构造函数
+	StrVec& operator=(const StrVec& rhs);	   // 拷贝赋值运算符
+	StrVec& operator=(StrVec&& rhs) noexcept;  // 移动赋值运算符
+	StrVec& operator=(const std::initializer_list<std::string>&);
+	StrVec& operator+=(const StrVec& s);
+	explicit operator bool() const;
+	std::string& operator[](const size_t& index);
+	const std::string& operator[](const size_t& index) const;
+	~StrVec();	// 析构函数
 
 	void push_back(const std::string& s);
+	void push_back(std::string&& s) &&;
 	void reserve(const size_t& sz);
 	void resize(const size_t& sz, const std::string& s = std::string());
 	size_t size() const

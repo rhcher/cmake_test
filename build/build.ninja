@@ -12,7 +12,7 @@
 
 # =============================================================================
 # Project: cpp_test
-# Configuration: 
+# Configuration: Debug
 # =============================================================================
 
 #############################################
@@ -63,7 +63,7 @@ build cmake_object_order_depends_target_main: phony || cmake_object_order_depend
 
 build CMakeFiles/main.dir/src/main.cpp.o: CXX_COMPILER__main ../src/main.cpp || cmake_object_order_depends_target_main
   DEP_FILE = CMakeFiles/main.dir/src/main.cpp.o.d
-  FLAGS = -g "-D_GLIBCXX_DEBUG -stdlib=libc++" -std=gnu++2a
+  FLAGS = -D_GLIBCXX_DEBUG -g   -std=gnu++2a
   INCLUDES = -I../include
   OBJECT_DIR = CMakeFiles/main.dir
   OBJECT_FILE_DIR = CMakeFiles/main.dir/src
@@ -77,6 +77,7 @@ build CMakeFiles/main.dir/src/main.cpp.o: CXX_COMPILER__main ../src/main.cpp || 
 # Link the executable main
 
 build main: CXX_EXECUTABLE_LINKER__main CMakeFiles/main.dir/src/main.cpp.o | libSales_data.a || libSales_data.a
+  FLAGS = -D_GLIBCXX_DEBUG -g
   LINK_LIBRARIES = libSales_data.a
   OBJECT_DIR = CMakeFiles/main.dir
   POST_BUILD = :
@@ -95,7 +96,7 @@ build cmake_object_order_depends_target_Sales_data: phony || CMakeFiles/Sales_da
 
 build CMakeFiles/Sales_data.dir/src/Screen.cpp.o: CXX_COMPILER__Sales_data ../src/Screen.cpp || cmake_object_order_depends_target_Sales_data
   DEP_FILE = CMakeFiles/Sales_data.dir/src/Screen.cpp.o.d
-  FLAGS = "-D_GLIBCXX_DEBUG -stdlib=libc++" -std=gnu++2a
+  FLAGS = -D_GLIBCXX_DEBUG -g   -std=gnu++2a
   INCLUDES = -I../include
   OBJECT_DIR = CMakeFiles/Sales_data.dir
   OBJECT_FILE_DIR = CMakeFiles/Sales_data.dir/src
@@ -109,6 +110,7 @@ build CMakeFiles/Sales_data.dir/src/Screen.cpp.o: CXX_COMPILER__Sales_data ../sr
 # Link the static library libSales_data.a
 
 build libSales_data.a: CXX_STATIC_LIBRARY_LINKER__Sales_data CMakeFiles/Sales_data.dir/src/Screen.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -D_GLIBCXX_DEBUG -g
   OBJECT_DIR = CMakeFiles/Sales_data.dir
   POST_BUILD = :
   PRE_LINK = :
